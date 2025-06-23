@@ -2,6 +2,8 @@
 #define POINT_H
 
 class Point {
+public:
+    static const char delimiter = ','; // Default delimiter for point representation
 private:
     double _x = 0.0;
     double _y = 0.0;
@@ -17,38 +19,7 @@ public:
     void setXY(const double x, const double y);
 };
 
-Point::Point() {
-    _x = 0.0;
-    _y = 0.0;
-}
+const char Point::delimiter;
 
-Point::Point(const double x, const double y) {
-    _x = x;
-    _y = y;
-}
-
-Point::~Point() {
-    // Do nothing
-}
-
-double Point::getX() const {
-    return _x;
-}
-
-double Point::getY() const {
-    return _y;
-}
-
-void Point::setX(const double x) {
-    _x = x;
-}
-
-void Point::setY(const double y) {
-    _y = y;
-}
-
-void Point::setXY(const double x, const double y) {
-    _x = x;
-    _y = y;
-}
+#include "Point.cpp"
 #endif // POINT_H

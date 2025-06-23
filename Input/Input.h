@@ -3,76 +3,28 @@
 
 #include <string>
 #include <expected>
+#include "../Vector/Vector.h"
+#include "../RegexPattern/RegexPattern.h"
 
 enum class InputError {
     None,
     Empty,
     NotANumber,
-    // OutOfRange Trong bài này không cần sử dụng
+    // OutOfRange 
 };
 
 class Input {
 public:
-    static std::expected<std::string, InputError> readValue();
+    static std::expected<std::string, InputError> readValue(const std::string& regexPattern = RegexPattern::STRING);
+    static std::expected<Vector<std::string>, InputError> readMultipleValues(const char& delimiter = ' ', const std::string& regexPattern = RegexPattern::STRING);
 public:
     static std::expected<int, InputError> readInt();
+    static std::expected<Vector<int>, InputError> readMultipleIntegers(const char& delimiter = ' ');
     static std::expected<double, InputError> readDouble();
+    static std::expected<Vector<double>, InputError> readMultipleDoubles(const char& delimiter = ' ');
 public:
     static std::string getErrorMessage(InputError error);
 };
 
-
-#include <iostream>
-#include <regex>
-
-std::expected<std::string, InputError> Input::readValue() {
-    std::string input;
-    std::getline(std::cin, input);
-
-    // Empty
-    if (input.empty()) {
-        return std::unexpected(InputError::Empty);
-    }
-
-    // Is a number
-    std::regex numberRegex("^-?\\d+(\\.\\d+)?$");
-    if (!std::regex_match(input, numberRegex)) {
-        return std::unexpected(InputError::NotANumber);
-    }
-
-
-    return input;
-}
-
-std::expected<int, InputError> Input::readInt() {
-    auto input = readValue();
-    if (!input.has_value()) {
-        return std::unexpected(input.error());
-    }
-    return std::stoi(input.value());
-}
-
-std::expected<double, InputError> Input::readDouble() {
-    auto input = readValue();
-    if (!input.has_value()) {
-        return std::unexpected(input.error());
-    }
-    return std::stod(input.value());
-}
-
-std::string Input::getErrorMessage(InputError error) {
-    switch (error) {
-        case InputError::None:
-            return "None";
-        case InputError::Empty:
-            return "Dữ liệu nhập rỗng";
-        case InputError::NotANumber:
-            return "Dữ liệu nhập vào không phải là một số hợp lệ";
-        // case InputError::OutOfRange: // Trong bài này không cần sử dụng
-        //     return "Giá trị nằm ngoài phạm vi cho phép";
-        default:
-            return "Lỗi không xác định";
-    }
-}
-
+#include "Input.cpp"
 #endif // INPUT_H
