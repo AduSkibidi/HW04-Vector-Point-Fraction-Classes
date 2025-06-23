@@ -1,0 +1,15 @@
+# Compiled files
+*.exe
+*.o
+*.obj
+
+# IDE files
+.vscode/
+.vs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Debug files
+*.pdb
