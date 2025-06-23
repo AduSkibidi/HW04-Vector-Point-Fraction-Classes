@@ -1,31 +1,120 @@
+/**
+ * @file Vector.h
+ * @brief File header cho lớp template Vector - mảng động tổng quát
+ * @author Nguyen The Quan (24127514)
+ * @date 2025
+ * @version 1.0
+ */
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
 #include <iostream>
 
+/**
+ * @class Vector
+ * @brief Lớp template mảng động tổng quát
+ * @tparam T Kiểu dữ liệu của các phần tử trong vector
+ * 
+ * Lớp Vector cung cấp:
+ * - Mảng động có thể thay đổi kích thước
+ * - Quản lý bộ nhớ tự động
+ * - Các thao tác cơ bản: thêm, truy cập, xóa
+ * - Copy constructor và assignment operator
+ */
 template <typename T>
 class Vector {
 private:
+    /**
+     * @brief Dung lượng ban đầu của vector
+     */
     static const int INITIAL_CAPACITY = 50;
+    /**
+     * @brief Bước tăng dung lượng khi cần mở rộng
+     */
     static const int STEP = 50;
 private:
+    /**
+     * @brief Con trỏ trỏ đến mảng chứa các phần tử
+     */
     T* _items = nullptr;
+    /**
+     * @brief Dung lượng hiện tại của vector
+     */
     int _capacity = 0;
+    /**
+     * @brief Số lượng phần tử hiện có trong vector
+     */
     int _size = 0;
 private: 
+    /**
+     * @brief Thay đổi kích thước mảng khi cần thiết
+     */
     void _resize();
+    /**
+     * @brief Sao chép sâu từ vector khác
+     * @param other Vector nguồn cần sao chép
+     */
     void _deepCopy(const Vector<T>& other);
 public:
+    /**
+     * @brief Constructor mặc định
+     */
     Vector();
+    
+    /**
+     * @brief Copy constructor
+     * @param other Vector nguồn cần sao chép
+     */
     Vector(const Vector<T>& other);
+    
+    /**
+     * @brief Assignment operator
+     * @param other Vector nguồn cần gán
+     * @return Tham chiếu đến vector hiện tại
+     */
     Vector& operator=(const Vector<T>& other);
+    
+    /**
+     * @brief Destructor
+     */
     ~Vector();
 public:
+    /**
+     * @brief Thêm phần tử vào cuối vector
+     * @param item Phần tử cần thêm
+     */
     void push_back(const T& item);
+    
+    /**
+     * @brief Truy cập phần tử theo chỉ số (có thể thay đổi)
+     * @param index Chỉ số của phần tử
+     * @return Tham chiếu đến phần tử
+     */
     T& operator[](int index);
+    
+    /**
+     * @brief Truy cập phần tử theo chỉ số (chỉ đọc)
+     * @param index Chỉ số của phần tử
+     * @return Tham chiếu const đến phần tử
+     */
     const T& operator[](int index) const;
+    
+    /**
+     * @brief Lấy số lượng phần tử trong vector
+     * @return Số lượng phần tử
+     */
     int size() const;
+    
+    /**
+     * @brief Kiểm tra vector có rỗng không
+     * @return true nếu vector rỗng, false nếu ngược lại
+     */
     bool isEmpty() const;
+    
+    /**
+     * @brief Xóa tất cả phần tử trong vector
+     */
     void clear();
 };
 
