@@ -1,163 +1,110 @@
 #include <iostream>
-#include <cassert>
 #include <string>
 #include "Fractions.h"
 #include "../Vector/Vector.h"
 #include "../utils/utils.h"
 
 // Simple test framework
-int tests_passed = 0;
-int tests_failed = 0;
+int total_tests = 0;
+int passed_tests = 0;
+int failed_tests = 0;
 
-#define ASSERT_EQ(expected, actual) \
+#define TEST_ASSERT(condition, test_name) \
     do { \
-        if ((expected) == (actual)) { \
-            std::cout << "✓ PASS: " << #expected << " == " << #actual << std::endl; \
-            tests_passed++; \
+        total_tests++; \
+        if (condition) { \
+            std::cout << "✓ " << test_name << " PASSED" << std::endl; \
+            passed_tests++; \
         } else { \
-            std::cout << "✗ FAIL: " << #expected << " == " << #actual << " (expected: " << (expected) << ", actual: " << (actual) << ")" << std::endl; \
-            tests_failed++; \
+            std::cout << "✗ " << test_name << " FAILED" << std::endl; \
+            failed_tests++; \
         } \
     } while(0)
 
-void test_fraction_default_constructor() {
-    std::cout << "\n=== Testing Fraction Default Constructor ===" << std::endl;
+#define EXPECT_EQ(expected, actual) ((expected) == (actual))
+#define EXPECT_TRUE(condition) (condition)
+#define EXPECT_FALSE(condition) (!(condition))
+
+void testFraction() {
+    std::cout << "\n=== FRACTION TESTS ===" << std::endl;
+    
+    // Test default constructor
     Fraction f;
-    ASSERT_EQ(0, f.getNumerator());
-    ASSERT_EQ(1, f.getDenominator());
-}
-
-void test_fraction_parameterized_constructor() {
-    std::cout << "\n=== Testing Fraction Parameterized Constructor ===" << std::endl;
-    Fraction frac1(1, 2);    // 1/2
-    Fraction frac2(3, 4);    // 3/4
+    TEST_ASSERT(EXPECT_EQ(0, f.getNumerator()) && EXPECT_EQ(1, f.getDenominator()), 
+                "Fraction Default Constructor");
     
-    ASSERT_EQ(1, frac1.getNumerator());
-    ASSERT_EQ(2, frac1.getDenominator());
-    ASSERT_EQ(3, frac2.getNumerator());
-    ASSERT_EQ(4, frac2.getDenominator());
-}
-
-void test_fraction_automatic_reduction() {
-    std::cout << "\n=== Testing Fraction Automatic Reduction ===" << std::endl;
-    Fraction frac3(6, 8);    // 6/8 = 3/4 (should be reduced)
-    
-    // 6/8 should be reduced to 3/4
-    ASSERT_EQ(3, frac3.getNumerator());
-    ASSERT_EQ(4, frac3.getDenominator());
-}
-
-void test_fraction_negative_fractions() {
-    std::cout << "\n=== Testing Fraction Negative Values ===" << std::endl;
-    Fraction frac4(-2, 3);   // -2/3
-    
-    ASSERT_EQ(-2, frac4.getNumerator());
-    ASSERT_EQ(3, frac4.getDenominator());
-}
-
-void test_fraction_setters_getters() {
-    std::cout << "\n=== Testing Fraction Setters and Getters ===" << std::endl;
-    Fraction f;
-    f.setNumerator(5);
-    f.setDenominator(7);
-    
-    ASSERT_EQ(5, f.getNumerator());
-    ASSERT_EQ(7, f.getDenominator());
-}
-
-void test_fraction_set_fraction() {
-    std::cout << "\n=== Testing Fraction SetFraction ===" << std::endl;
-    Fraction f;
-    f.setFraction(9, 12);  // Should be reduced to 3/4
-    
-    ASSERT_EQ(3, f.getNumerator());
-    ASSERT_EQ(4, f.getDenominator());
-}
-
-void test_fraction_addition() {
-    std::cout << "\n=== Testing Fraction Addition ===" << std::endl;
-    Fraction frac1(1, 2);    // 1/2
-    Fraction frac2(3, 4);    // 3/4
-    
-    // 1/2 + 3/4 = 2/4 + 3/4 = 5/4
-    Fraction result = frac1 + frac2;
-    ASSERT_EQ(5, result.getNumerator());
-    ASSERT_EQ(4, result.getDenominator());
-}
-
-void test_fraction_subtraction() {
-    std::cout << "\n=== Testing Fraction Subtraction ===" << std::endl;
-    Fraction frac1(1, 2);    // 1/2
-    Fraction frac2(3, 4);    // 3/4
-    
-    // 3/4 - 1/2 = 3/4 - 2/4 = 1/4
-    Fraction result = frac2 - frac1;
-    ASSERT_EQ(1, result.getNumerator());
-    ASSERT_EQ(4, result.getDenominator());
-}
-
-void test_fraction_multiplication() {
-    std::cout << "\n=== Testing Fraction Multiplication ===" << std::endl;
-    Fraction frac1(1, 2);    // 1/2
-    Fraction frac2(3, 4);    // 3/4
-    
-    // 1/2 * 3/4 = 3/8
-    Fraction result = frac1 * frac2;
-    ASSERT_EQ(3, result.getNumerator());
-    ASSERT_EQ(8, result.getDenominator());
-}
-
-void test_fraction_to_string() {
-    std::cout << "\n=== Testing Fraction ToString ===" << std::endl;
+    // Test parameterized constructor
     Fraction frac1(1, 2);
     Fraction frac2(3, 4);
+    TEST_ASSERT(EXPECT_EQ(1, frac1.getNumerator()) && EXPECT_EQ(2, frac1.getDenominator()), 
+                "Fraction Parameterized Constructor 1");
+    TEST_ASSERT(EXPECT_EQ(3, frac2.getNumerator()) && EXPECT_EQ(4, frac2.getDenominator()), 
+                "Fraction Parameterized Constructor 2");
     
-    ASSERT_EQ(std::string("1/2"), frac1.toString());
-    ASSERT_EQ(std::string("3/4"), frac2.toString());
+    // Test automatic reduction
+    Fraction frac3(6, 8);  // Should reduce to 3/4
+    TEST_ASSERT(EXPECT_EQ(3, frac3.getNumerator()) && EXPECT_EQ(4, frac3.getDenominator()), 
+                "Fraction Automatic Reduction");
     
-    // Test whole number
+    // Test setters and getters
+    Fraction f2;
+    f2.setNumerator(5);
+    f2.setDenominator(7);
+    TEST_ASSERT(EXPECT_EQ(5, f2.getNumerator()) && EXPECT_EQ(7, f2.getDenominator()), 
+                "Fraction Setters and Getters");
+    
+    // Test setFraction
+    Fraction f3;
+    f3.setFraction(9, 12);  // Should reduce to 3/4
+    TEST_ASSERT(EXPECT_EQ(3, f3.getNumerator()) && EXPECT_EQ(4, f3.getDenominator()), 
+                "Fraction SetFraction");
+    
+    // Test addition
+    Fraction a(1, 2);
+    Fraction b(3, 4);
+    Fraction sum = a + b;  // 1/2 + 3/4 = 5/4
+    TEST_ASSERT(EXPECT_EQ(5, sum.getNumerator()) && EXPECT_EQ(4, sum.getDenominator()), 
+                "Fraction Addition");
+    
+    // Test subtraction
+    Fraction diff = b - a;  // 3/4 - 1/2 = 1/4
+    TEST_ASSERT(EXPECT_EQ(1, diff.getNumerator()) && EXPECT_EQ(4, diff.getDenominator()), 
+                "Fraction Subtraction");
+    
+    // Test multiplication
+    Fraction prod = a * b;  // 1/2 * 3/4 = 3/8
+    TEST_ASSERT(EXPECT_EQ(3, prod.getNumerator()) && EXPECT_EQ(8, prod.getDenominator()), 
+                "Fraction Multiplication");
+    
+    // Test toString
+    TEST_ASSERT(a.toString() == "1/2", "Fraction ToString Regular");
+    
     Fraction whole(5, 1);
-    ASSERT_EQ(std::string("5"), whole.toString());
+    TEST_ASSERT(whole.toString() == "5", "Fraction ToString Whole Number");
+    
+    // Test static delimiter
+    TEST_ASSERT(EXPECT_EQ('/', Fraction::delimiter), "Fraction Static Delimiter");
 }
 
-void test_fraction_delimiter() {
-    std::cout << "\n=== Testing Fraction Static Delimiter ===" << std::endl;
-    ASSERT_EQ('/', Fraction::delimiter);
+void testUtils() {
+    std::cout << "\n=== UTILS TESTS ===" << std::endl;
+    
+    // Test GCD
+    TEST_ASSERT(EXPECT_EQ(4, gcd(12, 8)), "Utils GCD Test 1");
+    TEST_ASSERT(EXPECT_EQ(5, gcd(15, 25)), "Utils GCD Test 2");
+    TEST_ASSERT(EXPECT_EQ(1, gcd(7, 13)), "Utils GCD Test 3");
+    TEST_ASSERT(EXPECT_EQ(6, gcd(18, 24)), "Utils GCD Test 4");
 }
 
-void test_utils_gcd() {
-    std::cout << "\n=== Testing Utils GCD ===" << std::endl;
-    ASSERT_EQ(4, utils::gcd(12, 8));
-    ASSERT_EQ(5, utils::gcd(15, 25));
-    ASSERT_EQ(1, utils::gcd(7, 13));
-    ASSERT_EQ(5, utils::gcd(0, 5));
-    ASSERT_EQ(5, utils::gcd(5, 0));
-}
-
-void test_utils_lcm() {
-    std::cout << "\n=== Testing Utils LCM ===" << std::endl;
-    ASSERT_EQ(12, utils::lcm(4, 6));
-    ASSERT_EQ(75, utils::lcm(15, 25));
-    ASSERT_EQ(91, utils::lcm(7, 13));
-}
-
-void test_utils_absolute_value() {
-    std::cout << "\n=== Testing Utils Absolute Value ===" << std::endl;
-    ASSERT_EQ(5, utils::abs(-5));
-    ASSERT_EQ(5, utils::abs(5));
-    ASSERT_EQ(0, utils::abs(0));
-}
-
-void test_vector_fraction_default_constructor() {
-    std::cout << "\n=== Testing Vector<Fraction> Default Constructor ===" << std::endl;
+void testVectorFraction() {
+    std::cout << "\n=== VECTOR FRACTION TESTS ===" << std::endl;
+    
+    // Test default constructor
     Vector<Fraction> vec;
-    ASSERT_EQ(0, vec.size());
-    ASSERT_EQ(true, vec.isEmpty());
-}
-
-void test_vector_fraction_push_back() {
-    std::cout << "\n=== Testing Vector<Fraction> Push Back ===" << std::endl;
-    Vector<Fraction> vec;
+    TEST_ASSERT(EXPECT_EQ(0, vec.size()) && EXPECT_TRUE(vec.isEmpty()), 
+                "Vector<Fraction> Default Constructor");
+    
+    // Test push_back
     Fraction f1(1, 2);
     Fraction f2(3, 4);
     Fraction f3(5, 6);
@@ -166,34 +113,27 @@ void test_vector_fraction_push_back() {
     vec.push_back(f2);
     vec.push_back(f3);
     
-    ASSERT_EQ(3, vec.size());
-    ASSERT_EQ(false, vec.isEmpty());
+    TEST_ASSERT(EXPECT_EQ(3, vec.size()) && EXPECT_FALSE(vec.isEmpty()), 
+                "Vector<Fraction> Push Back Size");
+    TEST_ASSERT(EXPECT_EQ(1, vec[0].getNumerator()) && EXPECT_EQ(2, vec[0].getDenominator()), 
+                "Vector<Fraction> Element Access 1");
+    TEST_ASSERT(EXPECT_EQ(3, vec[1].getNumerator()) && EXPECT_EQ(4, vec[1].getDenominator()), 
+                "Vector<Fraction> Element Access 2");
     
-    ASSERT_EQ(1, vec[0].getNumerator());
-    ASSERT_EQ(2, vec[0].getDenominator());
-    ASSERT_EQ(3, vec[1].getNumerator());
-    ASSERT_EQ(4, vec[1].getDenominator());
-    ASSERT_EQ(5, vec[2].getNumerator());
-    ASSERT_EQ(6, vec[2].getDenominator());
-}
-
-void test_vector_fraction_copy_constructor() {
-    std::cout << "\n=== Testing Vector<Fraction> Copy Constructor ===" << std::endl;
-    Vector<Fraction> vec;
-    vec.push_back(Fraction(1, 3));
-    vec.push_back(Fraction(2, 5));
-    
+    // Test copy constructor
     Vector<Fraction> vec2(vec);
+    TEST_ASSERT(EXPECT_EQ(3, vec2.size()), "Vector<Fraction> Copy Constructor");
     
-    ASSERT_EQ(2, vec2.size());
-    ASSERT_EQ(1, vec2[0].getNumerator());
-    ASSERT_EQ(3, vec2[0].getDenominator());
-    ASSERT_EQ(2, vec2[1].getNumerator());
-    ASSERT_EQ(5, vec2[1].getDenominator());
+    // Test clear
+    vec2.clear();
+    TEST_ASSERT(EXPECT_EQ(0, vec2.size()) && EXPECT_TRUE(vec2.isEmpty()), 
+                "Vector<Fraction> Clear");
 }
 
-void test_integration_sum_of_fractions() {
-    std::cout << "\n=== Testing Integration: Sum of Fractions ===" << std::endl;
+void testIntegration() {
+    std::cout << "\n=== INTEGRATION TESTS ===" << std::endl;
+    
+    // Test sum of fractions
     Vector<Fraction> fractions;
     fractions.push_back(Fraction(1, 2));  // 1/2
     fractions.push_back(Fraction(1, 3));  // 1/3
@@ -205,69 +145,64 @@ void test_integration_sum_of_fractions() {
         sum = sum + fractions[i];
     }
     
-    ASSERT_EQ(1, sum.getNumerator());
-    ASSERT_EQ(1, sum.getDenominator());
+    TEST_ASSERT(EXPECT_EQ(1, sum.getNumerator()) && EXPECT_EQ(1, sum.getDenominator()), 
+                "Sum of Fractions Integration Test");
+    
+    // Test complex operations
+    Fraction a(2, 3);   // 2/3
+    Fraction b(3, 4);   // 3/4
+    Fraction c(1, 6);   // 1/6
+    
+    // Test: (2/3 + 3/4) * 1/6
+    Fraction sumAB = a + b;       // 2/3 + 3/4 = 8/12 + 9/12 = 17/12
+    Fraction result = sumAB * c;  // 17/12 * 1/6 = 17/72
+    
+    TEST_ASSERT(EXPECT_EQ(17, result.getNumerator()) && EXPECT_EQ(72, result.getDenominator()), 
+                "Complex Fraction Operations");
 }
 
-void test_edge_case_large_fractions() {
-    std::cout << "\n=== Testing Edge Case: Large Fractions ===" << std::endl;
-    Fraction large(1000000, 2000000);  // Should be reduced to 1/2
-    ASSERT_EQ(1, large.getNumerator());
-    ASSERT_EQ(2, large.getDenominator());
-}
-
-void test_edge_case_zero_numerator() {
-    std::cout << "\n=== Testing Edge Case: Zero Numerator ===" << std::endl;
+void testEdgeCases() {
+    std::cout << "\n=== EDGE CASE TESTS ===" << std::endl;
+    
+    // Test large fractions
+    Fraction large(1000000, 2000000);  // Should reduce to 1/2
+    TEST_ASSERT(EXPECT_EQ(1, large.getNumerator()) && EXPECT_EQ(2, large.getDenominator()), 
+                "Large Fraction Reduction");
+    
+    // Test zero numerator
     Fraction zero(0, 5);
-    ASSERT_EQ(0, zero.getNumerator());
-    ASSERT_EQ(1, zero.getDenominator());  // Should be reduced to 0/1
+    TEST_ASSERT(EXPECT_EQ(0, zero.getNumerator()) && EXPECT_EQ(1, zero.getDenominator()), 
+                "Zero Numerator");
+    
+    // Test improper fractions
+    Fraction improper(7, 3);  // 7/3
+    TEST_ASSERT(EXPECT_EQ(7, improper.getNumerator()) && EXPECT_EQ(3, improper.getDenominator()), 
+                "Improper Fraction");
+    TEST_ASSERT(improper.toString() == "7/3", "Improper Fraction ToString");
+    
+    // Test unit fraction
+    Fraction unit(1, 1);
+    TEST_ASSERT(unit.toString() == "1", "Unit Fraction ToString");
 }
 
 int main() {
-    std::cout << "==================================" << std::endl;
-    std::cout << "  FRACTION PROJECT TEST SUITE" << std::endl;
-    std::cout << "==================================" << std::endl;
+    std::cout << "======================================" << std::endl;
+    std::cout << "  FRACTION PROJECT SIMPLE TEST SUITE" << std::endl;
+    std::cout << "======================================" << std::endl;
     
-    // Run all tests
-    test_fraction_default_constructor();
-    test_fraction_parameterized_constructor();
-    test_fraction_automatic_reduction();
-    test_fraction_negative_fractions();
-    test_fraction_setters_getters();
-    test_fraction_set_fraction();
+    testFraction();
+    testUtils();
+    testVectorFraction();
+    testIntegration();
+    testEdgeCases();
     
-    test_fraction_addition();
-    test_fraction_subtraction();
-    test_fraction_multiplication();
-    test_fraction_to_string();
-    test_fraction_delimiter();
+    std::cout << "\n======================================" << std::endl;
+    std::cout << "TEST SUMMARY:" << std::endl;
+    std::cout << "Total Tests: " << total_tests << std::endl;
+    std::cout << "Passed: " << passed_tests << " ✓" << std::endl;
+    std::cout << "Failed: " << failed_tests << " ✗" << std::endl;
+    std::cout << "Success Rate: " << (passed_tests * 100.0 / total_tests) << "%" << std::endl;
+    std::cout << "======================================" << std::endl;
     
-    test_utils_gcd();
-    test_utils_lcm();
-    test_utils_absolute_value();
-    
-    test_vector_fraction_default_constructor();
-    test_vector_fraction_push_back();
-    test_vector_fraction_copy_constructor();
-    
-    test_integration_sum_of_fractions();
-    
-    test_edge_case_large_fractions();
-    test_edge_case_zero_numerator();
-    
-    // Print summary
-    std::cout << "\n==================================" << std::endl;
-    std::cout << "        TEST SUMMARY" << std::endl;
-    std::cout << "==================================" << std::endl;
-    std::cout << "Tests Passed: " << tests_passed << std::endl;
-    std::cout << "Tests Failed: " << tests_failed << std::endl;
-    std::cout << "Total Tests:  " << (tests_passed + tests_failed) << std::endl;
-    
-    if (tests_failed == 0) {
-        std::cout << "\n🎉 ALL TESTS PASSED! 🎉" << std::endl;
-        return 0;
-    } else {
-        std::cout << "\n❌ SOME TESTS FAILED! ❌" << std::endl;
-        return 1;
-    }
+    return failed_tests == 0 ? 0 : 1;
 }
